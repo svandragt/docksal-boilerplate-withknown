@@ -1,6 +1,6 @@
 # Known CMS example project for Docksal
 
-[Known](https://github.com/idno/known) example project for Docksal
+[Known](https://github.com/idno/known) example project for [Docksal](https://docksal.io/)
 
 # Instructions
 

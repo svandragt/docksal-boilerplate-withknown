@@ -1,0 +1,7 @@
+site_title="Site title"
+database="MySQL"
+mysql_name="default"
+mysql_user="user"
+mysql_pass="user"
+mysql_host="db"
+upload_path="/var/www/web/Uploads/"

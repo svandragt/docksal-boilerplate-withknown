@@ -9,38 +9,31 @@ green_bg='\033[42m'
 yellow='\033[1;33m'
 NC='\033[0m'
 
-LARAVEL_ROOT="web"
+KNOWN_ROOT="web"
 
 # ---------- Runtime ------------
 
-if [ -d "$PROJECT_ROOT/$LARAVEL_ROOT" ]; then
-  echo -e "${yellow}Directory exists${NC}: $PROJECT_ROOT/$LARAVEL_ROOT"
-  echo "Delete this directory and start Laravel installation?"
+if [ -d "$PROJECT_ROOT/$KNOWN_ROOT" ]; then
+  echo -e "${yellow}Directory exists${NC}: $PROJECT_ROOT/$KNOWN_ROOT"
+  echo "Delete this directory and start Known installation?"
   echo "Press Enter to delete it and continue or Ctrl-C to cancel..."
   read -p ""
 fi
 
-rm -r "$PROJECT_ROOT/$LARAVEL_ROOT" 2>/dev/null
+rm -r "$PROJECT_ROOT/$KNOWN_ROOT" 2>/dev/null
 
 # Reset containers
 fin reset -f
 
-# Require installer
-fin exec composer global require "laravel/installer"
-
-# Install laravel
+# Install known
 cd "$PROJECT_ROOT"
-fin exec composer create-project --prefer-dist laravel/laravel "$LARAVEL_ROOT"
+fin exec composer create-project --prefer-dist idno/known "$KNOWN_ROOT"
+cd "$KNOWN_ROOT"
+fin exec composer install
+cd ..
+fin exec php $KNOWN_ROOT/warmup/CLI/CLIInstaller.php install config.ini .docksal/manifest.txt
 
-echo "Copying Database settings..."
-fin exec sed -i 's/DB_HOST=127.0.0.1/DB_HOST=db/g' "${LARAVEL_ROOT}/.env"
-fin exec sed -i 's/DB_DATABASE=laravel/DB_DATABASE=default/g' "${LARAVEL_ROOT}/.env"
-fin exec sed -i 's/DB_USERNAME=root/DB_USERNAME=user/g' "${LARAVEL_ROOT}/.env"
-fin exec sed -i 's/DB_PASSWORD=/DB_PASSWORD=user/g' "${LARAVEL_ROOT}/.env"
-
-echo "Installing artisan addon..."
-fin addon install artisan
 
 echo "------------------------------------"
 echo -e "${green}Installation complete.${NC}"
-echo -e "  URL: ${yellow}http://$VIRTUAL_HOST${NC}"
+echo -e "  URL: ${yellow}https://$VIRTUAL_HOST${NC}"

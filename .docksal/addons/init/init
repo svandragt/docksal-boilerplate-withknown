@@ -25,11 +25,15 @@ rm -r "$PROJECT_ROOT/$KNOWN_ROOT" 2>/dev/null
 # Reset containers
 fin reset -f
 
-# Install known
+# Install known - dev branch
 cd "$PROJECT_ROOT"
-fin exec composer create-project --prefer-dist idno/known "$KNOWN_ROOT"
+fin exec git clone https://github.com/idno/known.git "$KNOWN_ROOT" 
 cd "$KNOWN_ROOT"
-fin exec composer install
+
+# TODO UPSTREAM roave/security-advisories dev-master conflicts with idno/known <=1.3.1
+fin exec composer remove roave/security-advisories
+
+fin exec composer -n install
 cd ..
 fin exec php $KNOWN_ROOT/warmup/CLI/CLIInstaller.php install config.ini .docksal/manifest.txt
 
